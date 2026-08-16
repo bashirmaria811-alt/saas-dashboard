@@ -46,3 +46,35 @@ footer {
   color: #4f46e5;
   font-weight: bold;
 }
+.form-section {
+  max-width: 400px;
+  margin: 60px auto;
+  padding: 30px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.form-section h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form-section label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-section input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.form-section .btn {
+  width: 100%;
+  margin-top: 20px;
+}
