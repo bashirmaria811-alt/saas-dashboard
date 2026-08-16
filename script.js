@@ -1,19 +1,26 @@
 // "Get Started" button pe click karne se alert dikhana
 const btn = document.querySelector('.btn');
 
-btn.addEventListener('click', function() {
-  alert('Welcome! Thanks for getting started with MyApp.');
-}); 
+if (btn) {
+  btn.addEventListener('click', function() {
+    alert('Welcome! Thanks for getting started with MyApp.');
+  });
+}
 // Navbar links pe hover/click se color change
 const navLinks = document.querySelectorAll('nav a');
 
-navLinks.forEach(link => {
-  link.addEventListener('click', function(e) {
-    e.preventDefault(); // link ko actually navigate hone se roke (kyunki abhi pages nahi bane)
-    navLinks.forEach(l => l.classList.remove('active'));
-    this.classList.add('active');
+if (navLinks.length > 0) {
+  navLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      // Sirf tab preventDefault karo jab link "#" ho (dummy link)
+      if (this.getAttribute('href') === '#') {
+        e.preventDefault();
+      }
+      navLinks.forEach(l => l.classList.remove('active'));
+      this.classList.add('active');
+    });
   });
-});
+}
 // Signup Form Validation
 const signupForm = document.getElementById('signupForm');
 
@@ -44,4 +51,30 @@ if (signupForm) {
     errorMsg.textContent = 'Account created successfully!';
     signupForm.reset(); // form ko khali kar do
   });
+}
+// Dashboard - Fetch users from a public API
+const userTableBody = document.getElementById('userTableBody');
+const loadingMsg = document.getElementById('loadingMsg');
+
+if (userTableBody) {
+  fetch('https://jsonplaceholder.typicode.com/users')
+    .then(response => response.json())
+    .then(users => {
+      loadingMsg.style.display = 'none'; // loading message hata do
+
+      users.forEach(user => {
+        const row = document.createElement('tr');
+        row.className = 'border-b hover:bg-gray-50';
+        row.innerHTML = `
+          <td class="px-6 py-3">${user.name}</td>
+          <td class="px-6 py-3">${user.email}</td>
+          <td class="px-6 py-3">${user.company.name}</td>
+        `;
+        userTableBody.appendChild(row);
+      });
+    })
+    .catch(error => {
+      loadingMsg.textContent = 'Failed to load users. Please try again.';
+      console.error('Error fetching users:', error);
+    });
 }
