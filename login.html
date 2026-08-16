@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - MyApp</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+  <header class="flex justify-between items-center bg-slate-900 text-white px-8 py-4">
+    <h1 class="text-2xl font-bold">MyApp</h1>
+    <nav><a href="index.html" class="hover:text-indigo-400">Home</a></nav>
+  </header>
+
+  <div class="max-w-md mx-auto mt-16 bg-white p-8 rounded-xl shadow">
+    <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
+    <form id="loginForm">
+      <label class="block mb-2 font-semibold">Email</label>
+      <input type="email" id="loginEmail" class="w-full border p-2 rounded mb-4" required>
+
+      <label class="block mb-2 font-semibold">Password</label>
+      <input type="password" id="loginPassword" class="w-full border p-2 rounded mb-4" required>
+
+      <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">Login</button>
+    </form>
+    <p id="loginMsg" class="mt-4 text-center"></p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

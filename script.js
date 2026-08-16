@@ -78,3 +78,30 @@ if (userTableBody) {
       console.error('Error fetching users:', error);
     });
 }
+// Simple Login Simulation using localStorage
+const loginForm = document.getElementById('loginForm');
+
+if (loginForm) {
+  loginForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const loginMsg = document.getElementById('loginMsg');
+
+    // Client-side state: user ko "logged in" mark karo
+    localStorage.setItem('loggedInUser', email);
+
+    loginMsg.style.color = 'green';
+    loginMsg.textContent = `Welcome, ${email}! You are now logged in.`;
+  });
+}
+
+// Dashboard pe check karo user logged in hai ya nahi
+const welcomeUser = document.getElementById('welcomeUser');
+if (welcomeUser) {
+  const user = localStorage.getItem('loggedInUser');
+  if (user) {
+    welcomeUser.textContent = `Logged in as: ${user}`;
+  } else {
+    welcomeUser.textContent = 'Not logged in';
+  }
+}
