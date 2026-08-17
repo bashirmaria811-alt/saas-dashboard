@@ -33,4 +33,4 @@ A responsive front-end web application built as part of an 8-week internship, de
 4. Right-click `index.html` → "Open with Live Server"
 
 ## Author
-[Aapka Naam Yahan Likhein]
+[Maria]
