@@ -114,3 +114,25 @@ function renderHabits() {
 }
 
 renderHabits();
+// Login Feature
+const habitLoginForm = document.getElementById('habitLoginForm');
+
+if (habitLoginForm) {
+  habitLoginForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('habitLoginEmail').value;
+    const msg = document.getElementById('habitLoginMsg');
+
+    localStorage.setItem('habitify_user', email);
+
+    msg.style.color = '#db2777';
+    msg.textContent = `Welcome, ${email}! 🌸`;
+  });
+}
+
+// Dashboard pe user ka naam dikhao
+const welcomeUserEl = document.getElementById('welcomeUser');
+if (welcomeUserEl) {
+  const user = localStorage.getItem('habitify_user');
+  welcomeUserEl.textContent = user ? `Welcome back, ${user} 🌷` : '';
+}
