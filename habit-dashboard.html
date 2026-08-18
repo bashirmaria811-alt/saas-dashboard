@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Habitify</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.85) translateY(15px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .pop-in { animation: popIn 0.4s ease-out forwards; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-pink-50 to-purple-100 min-h-screen">
+
+  <header class="flex justify-between items-center bg-fuchsia-900 text-white px-8 py-4">
+    <h1 class="text-2xl font-bold">🌸 Habitify</h1>
+    <nav class="space-x-6">
+      <a href="habit-landing.html" class="hover:text-pink-300">Home</a>
+      <a href="habit-dashboard.html" class="text-pink-300 font-semibold border-b-2 border-pink-300">Dashboard</a>
+      <a href="habit-login.html" class="hover:text-pink-300">Login</a>
+    </nav>
+  </header>
+
+  <div class="max-w-3xl mx-auto p-8">
+    <h2 class="text-3xl font-bold mb-2 text-fuchsia-900">My Habits 🌷</h2>
+    <p id="welcomeUser" class="text-purple-600 mb-6"></p>
+
+    <form id="addHabitForm" class="flex gap-3 mb-8">
+      <input type="text" id="habitName" placeholder="e.g. Drink Water" required
+        class="flex-1 border border-pink-200 p-3 rounded-full px-5 focus:outline-none focus:ring-2 focus:ring-pink-400">
+      <select id="habitCategory" class="border border-pink-200 p-3 rounded-full px-4">
+        <option value="Health">Health</option>
+        <option value="Study">Study</option>
+        <option value="Fitness">Fitness</option>
+        <option value="Other">Other</option>
+      </select>
+      <button type="submit" class="bg-pink-500 text-white px-5 py-3 rounded-full hover:bg-pink-600 shadow-md">
+        Add Habit 💗
+      </button>
+    </form>
+
+    <div id="habitList" class="space-y-3"></div>
+  </div>
+
+  <script src="habit-script.js"></script>
+</body>
+</html>
