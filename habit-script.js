@@ -136,3 +136,32 @@ if (welcomeUserEl) {
   const user = localStorage.getItem('habitify_user');
   welcomeUserEl.textContent = user ? `Welcome back, ${user} 🌷` : '';
 }
+
+// Motivational Quote API
+const quoteText = document.getElementById('quoteText');
+
+if (quoteText) {
+  fetch('https://dummyjson.com/quotes/random')
+    .then(res => res.json())
+    .then(data => {
+      quoteText.textContent = `"${data.quote}" — ${data.author}`;
+    })
+    .catch(err => {
+      quoteText.textContent = '"Small daily habits shape who you become." 🌷';
+    });
+}
+
+// Weather Widget (Karachi ke liye — chahen to city change kar sakti hain)
+const weatherText = document.getElementById('weatherText');
+
+if (weatherText) {
+  fetch('https://api.open-meteo.com/v1/forecast?latitude=34.15&longitude=73.21&current_weather=true')
+    .then(res => res.json())
+    .then(data => {
+      const temp = data.current_weather.temperature;
+      weatherText.textContent = `🌤️ Abbottabad: ${temp}°C right now`;
+    })
+    .catch(err => {
+      weatherText.textContent = '🌤️ Weather unavailable right now';
+    });
+}

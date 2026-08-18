@@ -25,9 +25,13 @@
   </header>
 
   <div class="max-w-3xl mx-auto p-8">
-    <h2 class="text-3xl font-bold mb-2 text-fuchsia-900">My Habits 🌷</h2>
+        <h2 class="text-3xl font-bold mb-2 text-fuchsia-900">My Habits 🌷</h2>
     <p id="welcomeUser" class="text-purple-600 mb-6"></p>
 
+    <!-- Motivational Quote Box -->
+    <div class="bg-white rounded-2xl shadow-md p-5 mb-6 border border-pink-100 text-center">
+      <p id="quoteText" class="text-purple-700 italic">Loading today's motivation... ✨</p>
+    </div>
     <form id="addHabitForm" class="flex gap-3 mb-8">
       <input type="text" id="habitName" placeholder="e.g. Drink Water" required
         class="flex-1 border border-pink-200 p-3 rounded-full px-5 focus:outline-none focus:ring-2 focus:ring-pink-400">
@@ -48,3 +52,4 @@
   <script src="habit-script.js"></script>
 </body>
 </html>
+   
