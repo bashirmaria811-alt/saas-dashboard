@@ -1,3 +1,10 @@
+// Dashboard ko protect karo - bina login ke access na ho
+if (window.location.pathname.includes('habit-dashboard')) {
+  const loggedInUser = localStorage.getItem('habitify_user');
+  if (!loggedInUser) {
+    window.location.href = 'habit-login.html';
+  }
+}
 function getTodayStr() {
   return new Date().toISOString().split('T')[0];
 }
@@ -126,7 +133,11 @@ if (habitLoginForm) {
     localStorage.setItem('habitify_user', email);
 
     msg.style.color = '#db2777';
-    msg.textContent = `Welcome, ${email}! 🌸`;
+    msg.textContent = `Welcome, ${email}! 🌸 Redirecting...`;
+
+    setTimeout(function() {
+      window.location.href = 'habit-dashboard.html';
+    }, 1200);
   });
 }
 
