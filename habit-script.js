@@ -1,10 +1,11 @@
-// Dashboard ko protect karo - bina login ke access na ho
+// Dashboard ko protect karo
 if (window.location.pathname.includes('habit-dashboard')) {
   const loggedInUser = localStorage.getItem('habitify_user');
   if (!loggedInUser) {
     window.location.href = 'habit-login.html';
   }
 }
+
 function getTodayStr() {
   return new Date().toISOString().split('T')[0];
 }
@@ -48,7 +49,7 @@ const habitList = document.getElementById('habitList');
 let habits = loadHabits();
 
 if (addHabitForm) {
-  addHabitForm.addEventListener('submit', function(e) {
+  addHabitForm.addEventListener('submit', function (e) {
     e.preventDefault();
     const name = document.getElementById('habitName').value.trim();
     const category = document.getElementById('habitCategory').value;
@@ -69,6 +70,31 @@ if (addHabitForm) {
   });
 }
 
+function showCelebration(streak, habitName) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:9999;';
+
+  const box = document.createElement('div');
+  box.style.cssText = 'background:white;padding:32px 40px;border-radius:24px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.2);max-width:320px;';
+
+  box.innerHTML =
+    '<div style="font-size:56px;margin-bottom:10px;">🎉</div>' +
+    '<h3 style="color:#9d174d;font-weight:bold;font-size:22px;margin-bottom:6px;">Amazing! ' + streak + ' Day Streak!</h3>' +
+    '<p style="color:#a21caf;margin-bottom:18px;">You are on fire with "' + habitName + '" 🔥</p>' +
+    '<button style="background:#ec4899;color:white;padding:10px 24px;border-radius:999px;border:none;font-weight:600;cursor:pointer;">Yay! Keep Going ✨</button>';
+
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+
+  overlay.addEventListener('click', () => overlay.remove());
+  box.querySelector('button').addEventListener('click', (e) => {
+    e.stopPropagation();
+    overlay.remove();
+  });
+}
+
+const milestones = [3, 7, 15, 30, 50, 100];
+
 function renderHabits() {
   if (!habitList) return;
   habitList.innerHTML = '';
@@ -82,22 +108,26 @@ function renderHabits() {
 
     const card = document.createElement('div');
     card.className = 'pop-in flex justify-between items-center bg-white p-4 rounded-2xl shadow-md border border-pink-100';
-    card.innerHTML = '<div class="flex items-center gap-4">' +
+    card.innerHTML =
+      '<div class="flex items-center gap-4">' +
       '<div class="text-3xl bg-pink-50 w-12 h-12 flex items-center justify-center rounded-full">' + icon + '</div>' +
       '<div>' +
-        '<p class="font-semibold text-fuchsia-900">' + habit.name + '</p>' +
-        '<p class="text-sm text-purple-500">' + habit.category + ' · 🔥 ' + habit.streak + ' day streak</p>' +
+      '<p class="font-semibold text-fuchsia-900">' + habit.name + '</p>' +
+      '<p class="text-sm text-purple-500">' + habit.category + ' · 🔥 ' + habit.streak + ' day streak</p>' +
       '</div>' +
-    '</div>' +
-    '<button data-id="' + habit.id + '" class="toggle-btn px-4 py-2 rounded-full ' + (doneToday ? 'bg-pink-500 text-white' : 'bg-purple-100 text-purple-700') + '">' +
+      '</div>' +
+      '<div class="flex items-center gap-2">' +
+      '<button data-id="' + habit.id + '" class="toggle-btn px-4 py-2 rounded-full ' + (doneToday ? 'bg-pink-500 text-white' : 'bg-purple-100 text-purple-700') + '">' +
       (doneToday ? 'Done Today ✓' : 'Mark Done') +
-    '</button>';
+      '</button>' +
+      '<button data-id="' + habit.id + '" class="delete-btn w-9 h-9 flex items-center justify-center rounded-full bg-red-50 text-red-400 hover:bg-red-100 hover:text-red-600">✕</button>' +
+      '</div>';
 
     habitList.appendChild(card);
   });
 
   document.querySelectorAll('.toggle-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
       const id = Number(this.getAttribute('data-id'));
       const habit = habits.find(h => h.id === id);
       const today = getTodayStr();
@@ -109,6 +139,9 @@ function renderHabits() {
       } else if (habit.lastCompletedDate === yesterday) {
         habit.streak += 1;
         habit.lastCompletedDate = today;
+        if (milestones.includes(habit.streak)) {
+          showCelebration(habit.streak, habit.name);
+        }
       } else {
         habit.streak = 1;
         habit.lastCompletedDate = today;
@@ -118,61 +151,62 @@ function renderHabits() {
       renderHabits();
     });
   });
-}
 
-renderHabits();
-// Login Feature
-const habitLoginForm = document.getElementById('habitLoginForm');
-
-if (habitLoginForm) {
-  habitLoginForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const email = document.getElementById('habitLoginEmail').value;
-    const msg = document.getElementById('habitLoginMsg');
-
-    localStorage.setItem('habitify_user', email);
-
-    msg.style.color = '#db2777';
-    msg.textContent = `Welcome, ${email}! 🌸 Redirecting...`;
-
-    setTimeout(function() {
-      window.location.href = 'habit-dashboard.html';
-    }, 1200);
+  document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const id = Number(this.getAttribute('data-id'));
+      if (confirm('Delete this habit?')) {
+        habits = habits.filter(h => h.id !== id);
+        saveHabits();
+        renderHabits();
+      }
+    });
   });
 }
 
-// Dashboard pe user ka naam dikhao
-const welcomeUserEl = document.getElementById('welcomeUser');
-if (welcomeUserEl) {
-  const user = localStorage.getItem('habitify_user');
-  welcomeUserEl.textContent = user ? `Welcome back, ${user} 🌷` : '';
-}
+renderHabits();
 
-// Motivational Quote API
 const quoteText = document.getElementById('quoteText');
-
 if (quoteText) {
   fetch('https://dummyjson.com/quotes/random')
     .then(res => res.json())
     .then(data => {
       quoteText.textContent = `"${data.quote}" — ${data.author}`;
     })
-    .catch(err => {
+    .catch(() => {
       quoteText.textContent = '"Small daily habits shape who you become." 🌷';
     });
 }
 
-// Weather Widget (Karachi ke liye — chahen to city change kar sakti hain)
 const weatherText = document.getElementById('weatherText');
-
 if (weatherText) {
   fetch('https://api.open-meteo.com/v1/forecast?latitude=34.15&longitude=73.21&current_weather=true')
     .then(res => res.json())
     .then(data => {
-      const temp = data.current_weather.temperature;
-      weatherText.textContent = `🌤️ Abbottabad: ${temp}°C right now`;
+      weatherText.textContent = `🌤️ Abbottabad: ${data.current_weather.temperature}°C right now`;
     })
-    .catch(err => {
+    .catch(() => {
       weatherText.textContent = '🌤️ Weather unavailable right now';
     });
+}
+
+const habitLoginForm = document.getElementById('habitLoginForm');
+if (habitLoginForm) {
+  habitLoginForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const email = document.getElementById('habitLoginEmail').value;
+    const msg = document.getElementById('habitLoginMsg');
+    localStorage.setItem('habitify_user', email);
+    msg.style.color = '#db2777';
+    msg.textContent = `Welcome, ${email}! 🌸 Redirecting...`;
+    setTimeout(function () {
+      window.location.href = 'habit-dashboard.html';
+    }, 1200);
+  });
+}
+
+const welcomeUserEl = document.getElementById('welcomeUser');
+if (welcomeUserEl) {
+  const user = localStorage.getItem('habitify_user');
+  welcomeUserEl.textContent = user ? `Welcome back, ${user} 🌷` : '';
 }
