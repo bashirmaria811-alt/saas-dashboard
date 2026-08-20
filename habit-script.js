@@ -30,14 +30,14 @@ function getHabitIcon(name, category) {
     clean: '🧹', tidy: '🧺', dish: '🍽️', laundry: '🧺',
     skin: '🧴', face: '🧼', shower: '🚿', bath: '🛁', teeth: '🦷', brush: '🪥',
     money: '💰', save: '💰', budget: '💵',
-    plant: '🪴', garden: '🌱', water_plant: '🪴',
+    plant: '🪴', garden: '🌱',
     music: '🎵', guitar: '🎸', piano: '🎹', sing: '🎤',
     art: '🎨', draw: '🎨', paint: '🖌️',
     code: '💻', program: '💻', computer: '💻',
     pray: '🤲', quran: '📗', namaz: '🕌', dua: '🤲',
-    sun: '☀️', walk_outside: '🌳', nature: '🌳',
+    sun: '☀️', nature: '🌳',
     call: '📞', family: '👨‍👩‍👧', friend: '🧑‍🤝‍🧑',
-    sleep_early: '🌙', wake: '⏰', early: '⏰',
+    wake: '⏰', early: '⏰',
     pet: '🐾', dog: '🐶', cat: '🐱',
     smile: '😊', gratitude: '🙏', thank: '🙏',
     phone: '📵', screen: '📵', social: '📵',
@@ -46,12 +46,20 @@ function getHabitIcon(name, category) {
   for (const key in map) {
     if (text.includes(key)) return map[key];
   }
-  if (category === 'Health') return '❤️';
-  if (category === 'Study') return '📖';
-  if (category === 'Fitness') return '💪';
-  return '🌸';
-}
 
+  // Agar naam se koi match na ho, to category ke set se rotate karo
+  const categoryIcons = {
+    Health: ['❤️', '🍎', '💊', '🩺'],
+    Study: ['📖', '🎓', '📝', '🧠'],
+    Fitness: ['💪', '🏋️‍♀️', '🤸‍♀️', '🥇'],
+    Other: ['🌸', '✨', '🎯', '🌈']
+  };
+  const options = categoryIcons[category] || categoryIcons.Other;
+  // Naam ke letters ka sum use karke consistent (lekin alag alag) icon choose karo
+  let sum = 0;
+  for (let i = 0; i < name.length; i++) sum += name.charCodeAt(i);
+  return options[sum % options.length];
+}
 function loadHabits() {
   const saved = localStorage.getItem('habitify_habits');
   return saved ? JSON.parse(saved) : [];
@@ -321,4 +329,161 @@ if (habitSignupForm) {
       window.location.href = 'habit-dashboard.html';
     }, 1200);
   });
+}
+
+// Daily Spin Wheel Game
+const spinBtn = document.getElementById('spinBtn');
+const spinWheel = document.getElementById('spinWheel');
+const spinMsg = document.getElementById('spinMsg');
+
+function getSpinDate() {
+  return localStorage.getItem('habitify_last_spin');
+}
+function canSpinToday() {
+  return getSpinDate() !== getTodayStr();
+}
+function updateSpinButton() {
+  if (!spinBtn) return;
+  if (!canSpinToday()) {
+    spinBtn.disabled = true;
+    spinBtn.textContent = 'Come Back Tomorrow 🌙';
+    spinBtn.classList.add('opacity-50', 'cursor-not-allowed');
+    if (spinMsg) spinMsg.textContent = 'You already spun today — come back tomorrow!';
+  }
+}
+if (spinBtn) {
+  updateSpinButton();
+  spinBtn.addEventListener('click', function () {
+    if (!canSpinToday()) return;
+    spinWheel.style.transform = 'rotate(1080deg)';
+    setTimeout(() => {
+      const prizes = [5, 10, 15, 20, 30, 50];
+      const won = prizes[Math.floor(Math.random() * prizes.length)];
+      coins += won;
+      saveCoins(coins);
+      updateCoinDisplay();
+      localStorage.setItem('habitify_last_spin', getTodayStr());
+      updateSpinButton();
+      showCelebration('You Won!', '🎡', 'The wheel landed on +' + won + ' coins! 🪙');
+    }, 700);
+  });
+}
+
+// ===== Mini Games (each playable once per day) =====
+function gameAlreadyPlayed(key) {
+  return localStorage.getItem(key) === getTodayStr();
+}
+function markGamePlayed(key) {
+  localStorage.setItem(key, getTodayStr());
+}
+function awardCoins(amount) {
+  coins += amount;
+  saveCoins(coins);
+  updateCoinDisplay();
+}
+
+// --- Memory Match ---
+const memoryGrid = document.getElementById('memoryGrid');
+const memoryMsg = document.getElementById('memoryMsg');
+if (memoryGrid) {
+  if (gameAlreadyPlayed('habitify_memory_played')) {
+    memoryMsg.textContent = 'Come back tomorrow for a new game! 🌙';
+  } else {
+    const emojis = ['🌸', '🌸', '🍀', '🍀', '⭐', '⭐'];
+    const shuffled = emojis.sort(() => Math.random() - 0.5);
+    let flipped = [];
+    let matched = [];
+    let locked = false;
+    shuffled.forEach((emoji, i) => {
+      const card = document.createElement('div');
+      card.className = 'w-full aspect-square bg-purple-200 rounded-lg flex items-center justify-center text-xl cursor-pointer select-none';
+      card.dataset.emoji = emoji;
+      card.dataset.index = i;
+      card.textContent = '❓';
+      card.addEventListener('click', function () {
+        if (locked || card.classList.contains('flipped') || matched.includes(i)) return;
+        card.textContent = emoji;
+        card.classList.add('flipped');
+        flipped.push({ i, emoji, el: card });
+        if (flipped.length === 2) {
+          locked = true;
+          setTimeout(() => {
+            if (flipped[0].emoji === flipped[1].emoji) {
+              matched.push(flipped[0].i, flipped[1].i);
+              if (matched.length === shuffled.length) {
+                awardCoins(20);
+                memoryMsg.textContent = 'You matched everything! +20 coins 🎉';
+                markGamePlayed('habitify_memory_played');
+              }
+            } else {
+              flipped.forEach(f => { f.el.textContent = '❓'; f.el.classList.remove('flipped'); });
+            }
+            flipped = [];
+            locked = false;
+          }, 600);
+        }
+      });
+      memoryGrid.appendChild(card);
+    });
+  }
+}
+
+// --- Scratch Card ---
+const scratchOverlay = document.getElementById('scratchOverlay');
+const scratchPrize = document.getElementById('scratchPrize');
+const scratchMsg = document.getElementById('scratchMsg');
+if (scratchOverlay) {
+  if (gameAlreadyPlayed('habitify_scratch_played')) {
+    scratchOverlay.style.display = 'none';
+    scratchMsg.textContent = 'Come back tomorrow! 🌙';
+  } else {
+    scratchOverlay.style.transition = 'opacity 0.3s';
+    scratchOverlay.addEventListener('click', function () {
+      const prize = [8, 12, 18, 25][Math.floor(Math.random() * 4)];
+      scratchPrize.textContent = '+' + prize + ' 🪙';
+      scratchOverlay.style.opacity = '0';
+      setTimeout(() => { scratchOverlay.style.display = 'none'; }, 300);
+      awardCoins(prize);
+      scratchMsg.textContent = 'You won +' + prize + ' coins! 🎉';
+      markGamePlayed('habitify_scratch_played');
+    });
+  }
+}
+
+// --- Number Guess ---
+const guessBtn = document.getElementById('guessBtn');
+const guessInput = document.getElementById('guessInput');
+const guessMsg = document.getElementById('guessMsg');
+if (guessBtn) {
+  if (gameAlreadyPlayed('habitify_guess_played')) {
+    guessBtn.disabled = true;
+    guessInput.disabled = true;
+    guessMsg.textContent = 'Come back tomorrow! 🌙';
+  } else {
+    const secretNumber = Math.floor(Math.random() * 10) + 1;
+    let attempts = 0;
+    guessBtn.addEventListener('click', function () {
+      const guess = Number(guessInput.value);
+      if (!guess || guess < 1 || guess > 10) {
+        guessMsg.textContent = 'Enter a number between 1-10';
+        return;
+      }
+      attempts++;
+      if (guess === secretNumber) {
+        awardCoins(30);
+        guessMsg.textContent = 'Correct! +30 coins 🎉';
+        guessBtn.disabled = true;
+        guessInput.disabled = true;
+        markGamePlayed('habitify_guess_played');
+      } else if (attempts >= 3) {
+        awardCoins(5);
+        guessMsg.textContent = 'Out of tries! The number was ' + secretNumber + '. +5 coins for trying';
+        guessBtn.disabled = true;
+        guessInput.disabled = true;
+        markGamePlayed('habitify_guess_played');
+      } else {
+        guessMsg.textContent = (guess < secretNumber ? 'Higher! ⬆️' : 'Lower! ⬇️') + ' (' + (3 - attempts) + ' tries left)';
+      }
+    });
+  }
 }

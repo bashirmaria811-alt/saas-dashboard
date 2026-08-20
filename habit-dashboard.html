@@ -44,6 +44,47 @@
     </div>
         <!-- Badges -->
     <div id="badgesRow" class="flex flex-wrap gap-2 mb-6"></div>
+        <!-- Badges -->
+    <div id="badgesRow" class="flex flex-wrap gap-2 mb-6"></div>
+
+    <!-- Daily Spin Game -->
+    <div class="bg-white rounded-2xl shadow-md p-5 mb-6 border border-pink-100 text-center">
+      <p class="font-semibold text-fuchsia-900 mb-2">🎡 Daily Spin — Win Bonus Coins!</p>
+      <div id="spinWheel" class="text-5xl mb-3 transition-transform duration-700">🎡</div>
+      <button id="spinBtn" class="bg-pink-500 text-white px-6 py-2 rounded-full hover:bg-pink-600 shadow-md">Spin Now</button>
+      <p id="spinMsg" class="text-purple-600 mt-2 text-sm"></p>
+    </div>
+
+    <!-- Mini Games -->
+    <h3 class="text-xl font-bold text-fuchsia-900 mb-3">🎮 Mini Games</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+
+      <!-- Memory Match -->
+      <div class="bg-white rounded-2xl shadow-md p-4 border border-pink-100 text-center">
+        <p class="font-semibold text-fuchsia-900 mb-2 text-sm">🧠 Memory Match</p>
+        <div id="memoryGrid" class="grid grid-cols-3 gap-2 mb-2"></div>
+        <p id="memoryMsg" class="text-xs text-purple-500"></p>
+      </div>
+
+      <!-- Scratch Card -->
+      <div class="bg-white rounded-2xl shadow-md p-4 border border-pink-100 text-center">
+        <p class="font-semibold text-fuchsia-900 mb-2 text-sm">🎫 Scratch Card</p>
+        <div class="relative w-full h-24 rounded-xl overflow-hidden mb-2">
+          <div id="scratchPrize" class="absolute inset-0 flex items-center justify-center text-lg font-bold text-pink-600 bg-pink-50">?</div>
+          <div id="scratchOverlay" class="absolute inset-0 bg-gradient-to-br from-purple-300 to-pink-300 flex items-center justify-center text-white text-sm cursor-pointer select-none">Scratch Me!</div>
+        </div>
+        <p id="scratchMsg" class="text-xs text-purple-500"></p>
+      </div>
+
+      <!-- Number Guess -->
+      <div class="bg-white rounded-2xl shadow-md p-4 border border-pink-100 text-center">
+        <p class="font-semibold text-fuchsia-900 mb-2 text-sm">🔢 Guess the Number (1-10)</p>
+        <input id="guessInput" type="number" min="1" max="10" class="w-16 text-center border border-pink-200 rounded-full p-1 mb-2">
+        <button id="guessBtn" class="bg-pink-500 text-white px-4 py-1 rounded-full text-sm hover:bg-pink-600 block mx-auto mb-2">Guess</button>
+        <p id="guessMsg" class="text-xs text-purple-500"></p>
+      </div>
+
+    </div>
 
     <form id="addHabitForm" class="flex flex-col sm:flex-row gap-3 mb-8">
       <input type="text" id="habitName" placeholder="e.g. Drink Water" required
