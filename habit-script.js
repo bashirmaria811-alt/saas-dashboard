@@ -1,11 +1,3 @@
-// Dashboard ko protect karo
-if (window.location.pathname.includes('habit-dashboard')) {
-  const loggedInUser = localStorage.getItem('habitify_user');
-  if (!loggedInUser) {
-    window.location.href = 'habit-login.html';
-  }
-}
-
 function getTodayStr() {
   return new Date().toISOString().split('T')[0];
 }
@@ -15,7 +7,6 @@ function getYesterdayStr() {
   return d.toISOString().split('T')[0];
 }
 
-// Bahut saare icons — kisi bhi habit naam ke liye
 function getHabitIcon(name, category) {
   const text = name.toLowerCase();
   const map = {
@@ -46,8 +37,6 @@ function getHabitIcon(name, category) {
   for (const key in map) {
     if (text.includes(key)) return map[key];
   }
-
-  // Agar naam se koi match na ho, to category ke set se rotate karo
   const categoryIcons = {
     Health: ['❤️', '🍎', '💊', '🩺'],
     Study: ['📖', '🎓', '📝', '🧠'],
@@ -55,11 +44,11 @@ function getHabitIcon(name, category) {
     Other: ['🌸', '✨', '🎯', '🌈']
   };
   const options = categoryIcons[category] || categoryIcons.Other;
-  // Naam ke letters ka sum use karke consistent (lekin alag alag) icon choose karo
   let sum = 0;
   for (let i = 0; i < name.length; i++) sum += name.charCodeAt(i);
   return options[sum % options.length];
 }
+
 function loadHabits() {
   const saved = localStorage.getItem('habitify_habits');
   return saved ? JSON.parse(saved) : [];
@@ -67,14 +56,12 @@ function loadHabits() {
 function saveHabits() {
   localStorage.setItem('habitify_habits', JSON.stringify(habits));
 }
-
 function loadCoins() {
   return Number(localStorage.getItem('habitify_coins') || 0);
 }
 function saveCoins(amount) {
   localStorage.setItem('habitify_coins', amount);
 }
-
 function loadBadges() {
   const saved = localStorage.getItem('habitify_badges');
   return saved ? JSON.parse(saved) : [];
@@ -132,16 +119,13 @@ function unlockBadge(id) {
 function showCelebration(title, bigEmoji, subtitle) {
   const overlay = document.createElement('div');
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:9999;';
-
   const box = document.createElement('div');
   box.style.cssText = 'background:white;padding:32px 40px;border-radius:24px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.25);max-width:320px;';
-
   box.innerHTML =
     '<div style="font-size:56px;margin-bottom:10px;">' + bigEmoji + '</div>' +
     '<h3 style="color:#9d174d;font-weight:bold;font-size:20px;margin-bottom:6px;">' + title + '</h3>' +
     '<p style="color:#a21caf;margin-bottom:18px;">' + subtitle + '</p>' +
     '<button style="background:#ec4899;color:white;padding:10px 24px;border-radius:999px;border:none;font-weight:600;cursor:pointer;">Awesome! ✨</button>';
-
   overlay.appendChild(box);
   document.body.appendChild(overlay);
   overlay.addEventListener('click', () => overlay.remove());
@@ -155,14 +139,7 @@ if (addHabitForm) {
     const category = document.getElementById('habitCategory').value;
     if (name === '') return;
 
-    habits.push({
-      id: Date.now(),
-      name: name,
-      category: category,
-      streak: 0,
-      lastCompletedDate: null
-    });
-
+    habits.push({ id: Date.now(), name, category, streak: 0, lastCompletedDate: null });
     saveHabits();
     renderHabits();
     addHabitForm.reset();
@@ -177,7 +154,6 @@ const milestones = [3, 7, 15, 30, 50, 100];
 function renderHabits() {
   if (!habitList) return;
   habitList.innerHTML = '';
-
   const today = getTodayStr();
   const yesterday = getYesterdayStr();
 
@@ -190,18 +166,14 @@ function renderHabits() {
     card.innerHTML =
       '<div class="flex items-center gap-4">' +
       '<div class="text-3xl bg-pink-50 w-12 h-12 flex items-center justify-center rounded-full">' + icon + '</div>' +
-      '<div>' +
-      '<p class="font-semibold text-fuchsia-900">' + habit.name + '</p>' +
-      '<p class="text-sm text-purple-500">' + habit.category + ' · 🔥 ' + habit.streak + ' day streak' + (!doneToday && habit.streak > 0 ? ' <span class="text-red-500">⏳ complete today!</span>' : '') + '</p>' +
-      '</div>' +
-      '</div>' +
+      '<div><p class="font-semibold text-fuchsia-900">' + habit.name + '</p>' +
+      '<p class="text-sm text-purple-500">' + habit.category + ' · 🔥 ' + habit.streak + ' day streak' +
+      (!doneToday && habit.streak > 0 ? ' <span class="text-red-500">⏳ complete today!</span>' : '') + '</p></div></div>' +
       '<div class="flex items-center gap-2">' +
       '<button data-id="' + habit.id + '" class="toggle-btn px-4 py-2 rounded-full ' + (doneToday ? 'bg-pink-500 text-white' : 'bg-purple-100 text-purple-700') + '">' +
-      (doneToday ? 'Done Today ✓' : 'Mark Done') +
-      '</button>' +
+      (doneToday ? 'Done Today ✓' : 'Mark Done') + '</button>' +
       '<button data-id="' + habit.id + '" class="delete-btn w-9 h-9 flex items-center justify-center rounded-full bg-red-50 text-red-400 hover:bg-red-100 hover:text-red-600">✕</button>' +
       '</div>';
-
     habitList.appendChild(card);
   });
 
@@ -216,32 +188,25 @@ function renderHabits() {
         habit.streak = Math.max(0, habit.streak - 1);
         habit.lastCompletedDate = null;
       } else {
-        if (habit.lastCompletedDate === yesterday) {
-          habit.streak += 1;
-        } else {
-          habit.streak = 1;
-        }
+        habit.streak = (habit.lastCompletedDate === yesterday) ? habit.streak + 1 : 1;
         habit.lastCompletedDate = today;
 
-        // Coins earn karo — random reward, kabhi kabhi bonus surprise!
-        const baseCoins = Math.floor(Math.random() * 6) + 5; // 5-10 coins
-        const isBonus = Math.random() < 0.2; // 20% chance surprise bonus
+        const baseCoins = Math.floor(Math.random() * 6) + 5;
+        const isBonus = Math.random() < 0.2;
         const earned = isBonus ? baseCoins * 3 : baseCoins;
         coins += earned;
         saveCoins(coins);
         updateCoinDisplay();
 
-               const surprises = [
-          () => showCelebration('Surprise Bonus!', '🎁', 'You earned +' + earned + ' coins! 🪙'),
-          () => showCelebration('Lucky You!', '🍀', 'A little luck came your way today ✨'),
-          () => showCelebration('Sparkle Moment', '💖', 'You are doing amazing, keep glowing!'),
-          () => showCelebration('Mystery Gift', '🎀', 'Here is a little surprise just for you!')
-        ];
         if (isBonus) {
-          const random = surprises[Math.floor(Math.random() * surprises.length)];
-          random();
+          const surprises = [
+            () => showCelebration('Surprise Bonus!', '🎁', 'You earned +' + earned + ' coins! 🪙'),
+            () => showCelebration('Lucky You!', '🍀', 'A little luck came your way today ✨'),
+            () => showCelebration('Sparkle Moment', '💖', 'You are doing amazing, keep glowing!'),
+            () => showCelebration('Mystery Gift', '🎀', 'Here is a little surprise just for you!')
+          ];
+          surprises[Math.floor(Math.random() * surprises.length)]();
         }
-
         if (milestones.includes(habit.streak)) {
           showCelebration(habit.streak + ' Day Streak!', '🎉', 'You are on fire with "' + habit.name + '" 🔥');
         }
@@ -266,6 +231,16 @@ function renderHabits() {
       }
     });
   });
+
+  const progressLabel = document.getElementById('progressLabel');
+  const progressBar = document.getElementById('progressBar');
+  if (progressLabel && progressBar) {
+    const doneCount = habits.filter(h => h.lastCompletedDate === today).length;
+    const total = habits.length;
+    const percent = total === 0 ? 0 : Math.round((doneCount / total) * 100);
+    progressLabel.textContent = doneCount + ' of ' + total + ' habits done today';
+    progressBar.style.width = percent + '%';
+  }
 }
 
 renderHabits();
@@ -300,14 +275,11 @@ if (habitLoginForm) {
     localStorage.setItem('habitify_user', email);
     msg.style.color = '#db2777';
     msg.textContent = `Welcome, ${email}! 🌸 Redirecting...`;
-    setTimeout(function () { window.location.href = 'habit-dashboard.html'; }, 1200);
+    setTimeout(function () {
+      if (typeof showPage === 'function') { showPage('dashboard'); }
+      else { window.location.href = 'habit-dashboard.html'; }
+    }, 1200);
   });
-}
-
-const welcomeUserEl = document.getElementById('welcomeUser');
-if (welcomeUserEl) {
-  const user = localStorage.getItem('habitify_user');
-  welcomeUserEl.textContent = user ? `Welcome back, ${user} 🌷` : '';
 }
 
 // Sign Up
@@ -318,29 +290,29 @@ if (habitSignupForm) {
     const name = document.getElementById('signupName').value.trim();
     const email = document.getElementById('signupEmail').value.trim();
     const msg = document.getElementById('signupMsg');
-
     localStorage.setItem('habitify_user', email);
     localStorage.setItem('habitify_username', name);
-
     msg.style.color = '#db2777';
     msg.textContent = `Welcome to Habitify, ${name}! 🌸 Redirecting...`;
-
     setTimeout(function () {
-      window.location.href = 'habit-dashboard.html';
+      if (typeof showPage === 'function') { showPage('dashboard'); }
+      else { window.location.href = 'habit-dashboard.html'; }
     }, 1200);
   });
+}
+
+const welcomeUserEl = document.getElementById('welcomeUser');
+if (welcomeUserEl) {
+  const user = localStorage.getItem('habitify_user');
+  welcomeUserEl.textContent = user ? `Welcome back, ${user} 🌷` : '';
 }
 
 // Daily Spin Wheel Game
 const spinBtn = document.getElementById('spinBtn');
 const spinWheel = document.getElementById('spinWheel');
 const spinMsg = document.getElementById('spinMsg');
-
-function getSpinDate() {
-  return localStorage.getItem('habitify_last_spin');
-}
 function canSpinToday() {
-  return getSpinDate() !== getTodayStr();
+  return localStorage.getItem('habitify_last_spin') !== getTodayStr();
 }
 function updateSpinButton() {
   if (!spinBtn) return;
@@ -369,20 +341,11 @@ if (spinBtn) {
   });
 }
 
-// ===== Mini Games (each playable once per day) =====
-function gameAlreadyPlayed(key) {
-  return localStorage.getItem(key) === getTodayStr();
-}
-function markGamePlayed(key) {
-  localStorage.setItem(key, getTodayStr());
-}
-function awardCoins(amount) {
-  coins += amount;
-  saveCoins(coins);
-  updateCoinDisplay();
-}
+// Mini Games
+function gameAlreadyPlayed(key) { return localStorage.getItem(key) === getTodayStr(); }
+function markGamePlayed(key) { localStorage.setItem(key, getTodayStr()); }
+function awardCoins(amount) { coins += amount; saveCoins(coins); updateCoinDisplay(); }
 
-// --- Memory Match ---
 const memoryGrid = document.getElementById('memoryGrid');
 const memoryMsg = document.getElementById('memoryMsg');
 if (memoryGrid) {
@@ -391,14 +354,10 @@ if (memoryGrid) {
   } else {
     const emojis = ['🌸', '🌸', '🍀', '🍀', '⭐', '⭐'];
     const shuffled = emojis.sort(() => Math.random() - 0.5);
-    let flipped = [];
-    let matched = [];
-    let locked = false;
+    let flipped = [], matched = [], locked = false;
     shuffled.forEach((emoji, i) => {
       const card = document.createElement('div');
       card.className = 'w-full aspect-square bg-purple-200 rounded-lg flex items-center justify-center text-xl cursor-pointer select-none';
-      card.dataset.emoji = emoji;
-      card.dataset.index = i;
       card.textContent = '❓';
       card.addEventListener('click', function () {
         if (locked || card.classList.contains('flipped') || matched.includes(i)) return;
@@ -428,7 +387,6 @@ if (memoryGrid) {
   }
 }
 
-// --- Scratch Card ---
 const scratchOverlay = document.getElementById('scratchOverlay');
 const scratchPrize = document.getElementById('scratchPrize');
 const scratchMsg = document.getElementById('scratchMsg');
@@ -450,7 +408,6 @@ if (scratchOverlay) {
   }
 }
 
-// --- Number Guess ---
 const guessBtn = document.getElementById('guessBtn');
 const guessInput = document.getElementById('guessInput');
 const guessMsg = document.getElementById('guessMsg');
@@ -464,22 +421,17 @@ if (guessBtn) {
     let attempts = 0;
     guessBtn.addEventListener('click', function () {
       const guess = Number(guessInput.value);
-      if (!guess || guess < 1 || guess > 10) {
-        guessMsg.textContent = 'Enter a number between 1-10';
-        return;
-      }
+      if (!guess || guess < 1 || guess > 10) { guessMsg.textContent = 'Enter a number between 1-10'; return; }
       attempts++;
       if (guess === secretNumber) {
         awardCoins(30);
         guessMsg.textContent = 'Correct! +30 coins 🎉';
-        guessBtn.disabled = true;
-        guessInput.disabled = true;
+        guessBtn.disabled = true; guessInput.disabled = true;
         markGamePlayed('habitify_guess_played');
       } else if (attempts >= 3) {
         awardCoins(5);
         guessMsg.textContent = 'Out of tries! The number was ' + secretNumber + '. +5 coins for trying';
-        guessBtn.disabled = true;
-        guessInput.disabled = true;
+        guessBtn.disabled = true; guessInput.disabled = true;
         markGamePlayed('habitify_guess_played');
       } else {
         guessMsg.textContent = (guess < secretNumber ? 'Higher! ⬆️' : 'Lower! ⬇️') + ' (' + (3 - attempts) + ' tries left)';
