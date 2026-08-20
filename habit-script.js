@@ -184,7 +184,7 @@ function renderHabits() {
       '<div class="text-3xl bg-pink-50 w-12 h-12 flex items-center justify-center rounded-full">' + icon + '</div>' +
       '<div>' +
       '<p class="font-semibold text-fuchsia-900">' + habit.name + '</p>' +
-      '<p class="text-sm text-purple-500">' + habit.category + ' · 🔥 ' + habit.streak + ' day streak</p>' +
+      '<p class="text-sm text-purple-500">' + habit.category + ' · 🔥 ' + habit.streak + ' day streak' + (!doneToday && habit.streak > 0 ? ' <span class="text-red-500">⏳ complete today!</span>' : '') + '</p>' +
       '</div>' +
       '</div>' +
       '<div class="flex items-center gap-2">' +
@@ -223,8 +223,15 @@ function renderHabits() {
         saveCoins(coins);
         updateCoinDisplay();
 
+               const surprises = [
+          () => showCelebration('Surprise Bonus!', '🎁', 'You earned +' + earned + ' coins! 🪙'),
+          () => showCelebration('Lucky You!', '🍀', 'A little luck came your way today ✨'),
+          () => showCelebration('Sparkle Moment', '💖', 'You are doing amazing, keep glowing!'),
+          () => showCelebration('Mystery Gift', '🎀', 'Here is a little surprise just for you!')
+        ];
         if (isBonus) {
-          showCelebration('Surprise Bonus!', '🎁', 'You earned +' + earned + ' coins! 🪙');
+          const random = surprises[Math.floor(Math.random() * surprises.length)];
+          random();
         }
 
         if (milestones.includes(habit.streak)) {
@@ -293,4 +300,25 @@ const welcomeUserEl = document.getElementById('welcomeUser');
 if (welcomeUserEl) {
   const user = localStorage.getItem('habitify_user');
   welcomeUserEl.textContent = user ? `Welcome back, ${user} 🌷` : '';
+}
+
+// Sign Up
+const habitSignupForm = document.getElementById('habitSignupForm');
+if (habitSignupForm) {
+  habitSignupForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const name = document.getElementById('signupName').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const msg = document.getElementById('signupMsg');
+
+    localStorage.setItem('habitify_user', email);
+    localStorage.setItem('habitify_username', name);
+
+    msg.style.color = '#db2777';
+    msg.textContent = `Welcome to Habitify, ${name}! 🌸 Redirecting...`;
+
+    setTimeout(function () {
+      window.location.href = 'habit-dashboard.html';
+    }, 1200);
+  });
 }
