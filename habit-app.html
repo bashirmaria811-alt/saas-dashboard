@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,52 +20,65 @@
   #splashScreen {
     position: fixed;
     inset: 0;
-    background: linear-gradient(135deg, #fdf2f8, #f3e8ff);
+    background: linear-gradient(135deg, #fdf2f8, #f3e8ff, #fce7f3);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 99999;
-    transition: opacity 0.6s ease, visibility 0.6s ease;
+    overflow: hidden;
+    transition: opacity 0.7s ease, visibility 0.7s ease;
   }
   #splashScreen.hide {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
   }
-  .splash-logo {
-    font-size: 64px;
-    animation: splashBounce 1.2s ease-in-out infinite;
+  .petal {
+    position: absolute;
+    top: -40px;
+    font-size: 22px;
+    animation-name: petalFall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
   }
-  @keyframes splashBounce {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-18px) scale(1.1); }
+  @keyframes petalFall {
+    0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.9; }
+    100% { transform: translateY(110vh) translateX(30px) rotate(360deg); opacity: 0.3; }
+  }
+  .splash-logo {
+    font-size: 70px;
+    opacity: 0;
+    transform: scale(0.5);
+    animation: logoAppear 1s ease-out forwards;
+    z-index: 2;
+  }
+  @keyframes logoAppear {
+    0% { opacity: 0; transform: scale(0.4) rotate(-15deg); }
+    60% { opacity: 1; transform: scale(1.15) rotate(5deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
   }
   .splash-text {
-    margin-top: 16px;
-    font-size: 24px;
+    margin-top: 14px;
+    font-size: 26px;
     font-weight: bold;
+    letter-spacing: 1px;
     color: #9d174d;
     opacity: 0;
-    animation: splashFadeIn 0.8s ease 0.3s forwards;
+    animation: splashFadeUp 0.8s ease 0.5s forwards;
+    z-index: 2;
   }
-  @keyframes splashFadeIn {
-    to { opacity: 1; }
+  @keyframes splashFadeUp {
+    0% { opacity: 0; transform: translateY(15px); }
+    100% { opacity: 1; transform: translateY(0); }
   }
-  .splash-dots span {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    margin: 0 3px;
-    border-radius: 50%;
-    background: #ec4899;
-    animation: splashDots 1.4s ease-in-out infinite;
-  }
-  .splash-dots span:nth-child(2) { animation-delay: 0.2s; }
-  .splash-dots span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes splashDots {
-    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
-    40% { transform: scale(1.2); opacity: 1; }
+  .splash-sub {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #a21caf;
+    opacity: 0;
+    animation: splashFadeUp 0.8s ease 0.8s forwards;
+    z-index: 2;
   }
   body.loading { overflow: hidden; }
 </style>
@@ -73,11 +87,10 @@
 
 <!-- Splash / Entry Animation -->
 <div id="splashScreen">
+  <div id="petalContainer"></div>
   <div class="splash-logo">🌸</div>
   <p class="splash-text">Habitify</p>
-  <div class="splash-dots mt-4">
-    <span></span><span></span><span></span>
-  </div>
+  <p class="splash-sub">Build better habits, one bloom at a time</p>
 </div>
 
 <header class="flex flex-col sm:flex-row justify-between items-center bg-fuchsia-900 text-white px-4 sm:px-8 py-4 gap-2 relative z-10">
@@ -233,12 +246,25 @@ function showPage(name) {
 }
 showPage('landing');
 
+const petalEmojis = ['🌸', '🌷', '💮', '✿'];
+const petalContainer = document.getElementById('petalContainer');
+for (let i = 0; i < 18; i++) {
+  const petal = document.createElement('span');
+  petal.className = 'petal';
+  petal.textContent = petalEmojis[Math.floor(Math.random() * petalEmojis.length)];
+  petal.style.left = Math.random() * 100 + '%';
+  petal.style.animationDuration = (3 + Math.random() * 3) + 's';
+  petal.style.animationDelay = (Math.random() * 2) + 's';
+  petal.style.fontSize = (14 + Math.random() * 14) + 'px';
+  petalContainer.appendChild(petal);
+}
+
 window.addEventListener('load', function () {
   setTimeout(function () {
     const splash = document.getElementById('splashScreen');
     splash.classList.add('hide');
     document.body.classList.remove('loading');
-  }, 1400);
+  }, 2000);
 });
 </script>
 <script src="habit-script.js"></script>
