@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,7 +36,6 @@
   .petal {
     position: absolute;
     top: -40px;
-    font-size: 22px;
     animation-name: petalFall;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
@@ -60,36 +58,45 @@
   }
   .splash-text {
     margin-top: 14px;
-    font-size: 26px;
+    font-size: 30px;
     font-weight: bold;
     letter-spacing: 1px;
     color: #9d174d;
+    z-index: 2;
+    display: flex;
+  }
+  .splash-letter {
+    display: inline-block;
     opacity: 0;
-    animation: splashFadeUp 0.8s ease 0.5s forwards;
+    transform: translateY(25px) scale(0.5);
+    animation: letterPop 0.5s ease-out forwards;
+  }
+  @keyframes letterPop {
+    0% { opacity: 0; transform: translateY(25px) scale(0.5) rotate(-10deg); }
+    60% { opacity: 1; transform: translateY(-6px) scale(1.2) rotate(5deg); }
+    100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+  }
+  .splash-sub {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #a21caf;
+    opacity: 0;
+    animation: splashFadeUp 0.8s ease 1.1s forwards;
     z-index: 2;
   }
   @keyframes splashFadeUp {
     0% { opacity: 0; transform: translateY(15px); }
     100% { opacity: 1; transform: translateY(0); }
   }
-  .splash-sub {
-    margin-top: 6px;
-    font-size: 13px;
-    color: #a21caf;
-    opacity: 0;
-    animation: splashFadeUp 0.8s ease 0.8s forwards;
-    z-index: 2;
-  }
   body.loading { overflow: hidden; }
 </style>
 </head>
 <body class="bg-gradient-to-br from-pink-50 to-purple-100 min-h-screen relative overflow-x-hidden loading">
 
-<!-- Splash / Entry Animation -->
 <div id="splashScreen">
   <div id="petalContainer"></div>
   <div class="splash-logo">🌸</div>
-  <p class="splash-text">Habitify</p>
+  <div id="splashLetters" class="splash-text"></div>
   <p class="splash-sub">Build better habits, one bloom at a time</p>
 </div>
 
@@ -105,7 +112,6 @@
   </div>
 </header>
 
-<!-- ===== LANDING PAGE ===== -->
 <div id="page-landing" class="page active">
   <section class="text-center py-20 px-6">
     <h2 class="text-4xl font-bold mb-4 text-fuchsia-900 pop-in">Build Better Habits, One Day at a Time 💫</h2>
@@ -133,7 +139,6 @@
   </section>
 </div>
 
-<!-- ===== SIGNUP PAGE ===== -->
 <div id="page-signup" class="page">
   <div class="max-w-md mx-auto mt-12 bg-white p-8 rounded-3xl shadow-lg pop-in relative z-10">
     <h2 class="text-2xl font-bold mb-6 text-center text-fuchsia-900">Join Habitify 🌸</h2>
@@ -151,7 +156,6 @@
   </div>
 </div>
 
-<!-- ===== LOGIN PAGE ===== -->
 <div id="page-login" class="page">
   <div class="max-w-md mx-auto mt-16 bg-white p-8 rounded-3xl shadow-lg pop-in relative z-10">
     <h2 class="text-2xl font-bold mb-6 text-center text-fuchsia-900">Welcome Back 🌷</h2>
@@ -173,7 +177,6 @@
   </div>
 </div>
 
-<!-- ===== DASHBOARD PAGE ===== -->
 <div id="page-dashboard" class="page">
   <div class="max-w-3xl mx-auto p-8">
     <h2 class="text-3xl font-bold mb-2 text-fuchsia-900">My Habits 🌷</h2>
@@ -246,16 +249,28 @@ function showPage(name) {
 }
 showPage('landing');
 
-const petalEmojis = ['🌸', '🌷', '💮', '✿'];
+// Animate "Habitify" letter by letter
+const letters = "Habitify".split('');
+const splashLetters = document.getElementById('splashLetters');
+letters.forEach((letter, i) => {
+  const span = document.createElement('span');
+  span.className = 'splash-letter';
+  span.textContent = letter;
+  span.style.animationDelay = (0.4 + i * 0.08) + 's';
+  splashLetters.appendChild(span);
+});
+
+// Falling petals + cute cartoon characters
+const floatEmojis = ['🌸', '🌷', '💮', '✿', '🐻', '🐰', '⭐', '🦋', '🧸', '🌟'];
 const petalContainer = document.getElementById('petalContainer');
-for (let i = 0; i < 18; i++) {
+for (let i = 0; i < 20; i++) {
   const petal = document.createElement('span');
   petal.className = 'petal';
-  petal.textContent = petalEmojis[Math.floor(Math.random() * petalEmojis.length)];
+  petal.textContent = floatEmojis[Math.floor(Math.random() * floatEmojis.length)];
   petal.style.left = Math.random() * 100 + '%';
   petal.style.animationDuration = (3 + Math.random() * 3) + 's';
   petal.style.animationDelay = (Math.random() * 2) + 's';
-  petal.style.fontSize = (14 + Math.random() * 14) + 'px';
+  petal.style.fontSize = (16 + Math.random() * 16) + 'px';
   petalContainer.appendChild(petal);
 }
 
@@ -264,7 +279,7 @@ window.addEventListener('load', function () {
     const splash = document.getElementById('splashScreen');
     splash.classList.add('hide');
     document.body.classList.remove('loading');
-  }, 2000);
+  }, 2400);
 });
 </script>
 <script src="habit-script.js"></script>

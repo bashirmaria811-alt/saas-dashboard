@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maria Bashir - Portfolio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .pop-in { animation: popIn 0.6s ease-out forwards; opacity: 0; }
+    .delay-1 { animation-delay: 0.15s; }
+    .delay-2 { animation-delay: 0.3s; }
+    .delay-3 { animation-delay: 0.45s; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-pink-50 to-purple-100 min-h-screen">
+
+  <header class="flex flex-col sm:flex-row justify-between items-center bg-fuchsia-900 text-white px-4 sm:px-8 py-4 gap-2">
+    <h1 class="text-xl sm:text-2xl font-bold">🌸 Maria Bashir</h1>
+    <nav class="space-x-4 sm:space-x-6 text-sm sm:text-base">
+      <a href="#about" class="hover:text-pink-300">About</a>
+      <a href="#projects" class="hover:text-pink-300">Projects</a>
+      <a href="#contact" class="hover:text-pink-300">Contact</a>
+    </nav>
+  </header>
+
+  <section id="about" class="text-center py-20 px-6">
+    <div class="text-6xl mb-4 pop-in">👩‍💻</div>
+    <h2 class="text-4xl font-bold mb-3 text-fuchsia-900 pop-in delay-1">Maria Bashir</h2>
+    <p class="text-lg text-purple-700 mb-2 pop-in delay-2">BSCS Student | Aspiring Web Developer</p>
+    <p class="max-w-xl mx-auto text-purple-600 pop-in delay-2">
+      I build responsive, interactive web applications using HTML, CSS, JavaScript, and Tailwind CSS.
+      Passionate about clean design and creating projects that feel fun to use.
+    </p>
+
+    <div class="flex flex-wrap justify-center gap-2 mt-6 pop-in delay-3">
+      <span class="bg-white border border-pink-200 text-fuchsia-800 px-3 py-1 rounded-full text-sm shadow-sm">HTML5</span>
+      <span class="bg-white border border-pink-200 text-fuchsia-800 px-3 py-1 rounded-full text-sm shadow-sm">CSS3</span>
+      <span class="bg-white border border-pink-200 text-fuchsia-800 px-3 py-1 rounded-full text-sm shadow-sm">JavaScript</span>
+      <span class="bg-white border border-pink-200 text-fuchsia-800 px-3 py-1 rounded-full text-sm shadow-sm">Tailwind CSS</span>
+      <span class="bg-white border border-pink-200 text-fuchsia-800 px-3 py-1 rounded-full text-sm shadow-sm">REST APIs</span>
+      <span class="bg-white border border-pink-200 text-fuchsia-800 px-3 py-1 rounded-full text-sm shadow-sm">Git & GitHub</span>
+    </div>
+  </section>
+
+  <section id="projects" class="max-w-5xl mx-auto px-6 pb-20">
+    <h3 class="text-3xl font-bold text-fuchsia-900 mb-8 text-center">My Projects</h3>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+      <div class="bg-white rounded-2xl shadow-md p-6 border border-pink-100 pop-in">
+        <div class="text-4xl mb-3">🌸</div>
+        <h4 class="text-xl font-bold text-fuchsia-900 mb-2">Habitify</h4>
+        <p class="text-purple-600 text-sm mb-4">
+          A gamified daily habit tracker with date-based streaks, coins, badges, spin-wheel rewards,
+          mini-games, and live weather & quote APIs. Fully responsive with a soft pink theme.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="bg-pink-50 text-pink-600 px-2 py-1 rounded-full text-xs">JavaScript</span>
+          <span class="bg-pink-50 text-pink-600 px-2 py-1 rounded-full text-xs">Tailwind CSS</span>
+          <span class="bg-pink-50 text-pink-600 px-2 py-1 rounded-full text-xs">REST API</span>
+          <span class="bg-pink-50 text-pink-600 px-2 py-1 rounded-full text-xs">localStorage</span>
+        </div>
+        <a href="habit-app.html" class="inline-block bg-pink-500 text-white px-5 py-2 rounded-full text-sm hover:bg-pink-600 shadow-md">
+          View Live Project →
+        </a>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-md p-6 border border-pink-100 pop-in delay-1">
+        <div class="text-4xl mb-3">📊</div>
+        <h4 class="text-xl font-bold text-fuchsia-900 mb-2">MyApp SaaS Dashboard</h4>
+        <p class="text-purple-600 text-sm mb-4">
+          A full SaaS-style web app with a landing page, signup form with validation, reusable
+          UI components, a live dashboard fetching real user data via REST API, and a login system.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="bg-pink-50 text-pink-600 px-2 py-1 rounded-full text-xs">HTML5</span>
+          <span class="bg-pink-50 text-pink-600 px-2 py-1 rounded-full text-xs">Tailwind CSS</span>
+          <span class="bg-pink-50 text-pink-600 px-2 py-1 rounded-full text-xs">REST API</span>
+          <span class="bg-pink-50 text-pink-600 px-2 py-1 rounded-full text-xs">Git</span>
+        </div>
+        <a href="index.html" class="inline-block bg-pink-500 text-white px-5 py-2 rounded-full text-sm hover:bg-pink-600 shadow-md">
+          View Live Project →
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="contact" class="bg-fuchsia-900 text-white text-center py-14 px-6">
+    <h3 class="text-2xl font-bold mb-4">Let's Connect 🌷</h3>
+    <p class="mb-2">📧 bashirmaria811@gmail.com</p>
+    <p>
+      🔗 <a href="https://linkedin.com/in/YOUR-LINKEDIN-USERNAME" target="_blank" class="underline hover:text-pink-300">LinkedIn Profile</a>
+    </p>
+  </section>
+
+</body>
+</html>
